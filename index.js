@@ -16,13 +16,37 @@ async function run() {
     try {
         await client.connect();
         const serviceCollection = client.db('manufacture_website').collection('services');
+        const bookingCollection = client.db('manufacture_website').collection('bookings');
 
         app.get('/service', async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
             const services = await cursor.toArray();
             res.send(services);
+        });
+
+        app.get('/booking', async (req, res) => {
+            const query = {};
+            const cursor = bookingCollection.find(query);
+            const bookings = await cursor.toArray();
+            res.send(bookings);
+            // const customerName = req.query.customerName;
+            // const query = { customerName: customerName };
+            // const bookings = await bookingCollection.find(query).toArray();
+            // res.send(bookings);
         })
+
+        app.post('/booking', async (req, res) => {
+            const booking = req.body;
+            const query = { purcesName: booking.purcesName, customerName: booking.customerName }
+            const exixts = await bookingCollection.findOne(query);
+            if (exixts) {
+                return res.send({ success: false, booking: exixts })
+            }
+            const result = await bookingCollection.insertOne(booking);
+            return res.send({ success: true, result });
+        })
+
     }
     finally {
 
