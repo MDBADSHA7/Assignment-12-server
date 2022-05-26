@@ -3,8 +3,8 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const res = require('express/lib/response');
-const { ObjectID } = require('bson');
+// const res = require('express/lib/response');
+// const { ObjectID } = require('bson');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -49,9 +49,9 @@ async function run() {
             }
         }
 
-        app.get('/service', async (req, res) => {
+        app.get('/service', verifyJWT, async (req, res) => {
             const query = {};
-            const cursor = serviceCollection.find(query).project({ name: 1 });
+            const cursor = serviceCollection.find(query);
             const services = await cursor.toArray();
             res.send(services);
         });
@@ -61,12 +61,12 @@ async function run() {
             res.send(users);
         })
 
-        app.get('/booking/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const booking = await userCollection.findOne(query);
-            res.send(booking);
-        })
+        // app.get('/booking/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = { _id: ObjectId(id) };
+        //     const booking = await userCollection.findOne(query);
+        //     res.send(booking);
+        // })
 
         app.get('/admin/:email', async (req, res) => {
             const email = req.params.email;
