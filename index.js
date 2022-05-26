@@ -47,7 +47,7 @@ async function run() {
                 res.status(403).send({ message: 'Forbidden' });
             }
         }
-        app.get('/service', async (req, res) => {
+        app.get('/service', verifyJWT, async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
             const services = await cursor.toArray();
