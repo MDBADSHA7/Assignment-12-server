@@ -3,8 +3,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
-// const res = require('express/lib/response');
-// const { ObjectID } = require('bson');
+
 const app = express();
 const port = process.env.PORT || 5000;
 app.use(cors());
@@ -57,14 +56,6 @@ async function run() {
             const users = await userCollection.find().toArray();
             res.send(users);
         })
-
-        // app.get('/booking/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const query = { _id: ObjectId(id) };
-        //     const booking = await userCollection.findOne(query);
-        //     res.send(booking);
-        // })
-
         app.get('/admin/:email', async (req, res) => {
             const email = req.params.email;
             const user = await userCollection.findOne({ email: email });
@@ -110,14 +101,10 @@ async function run() {
             const query = {};
             const authorization = req.headers.authorization;
             console.log('auth header', authorization);
-            // const decodedEmail = req.decoded.email;
             const cursor = bookingCollection.find(query);
             const bookings = await cursor.toArray();
             res.send(bookings);
-            // const customerName = req.query.customerName;
-            // const query = { customerName: customerName };
-            // const bookings = await bookingCollection.find(query).toArray();
-            // res.send(bookings);
+
         });
         app.post('/product', verifyJWT, verifyAdmin, async (req, res) => {
             const product = req.body;
